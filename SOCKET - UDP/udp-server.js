@@ -1,8 +1,5 @@
-var udp = require('dgram')
-
+var udp = require('dgram');
 var server = udp.createSocket('udp4');
-
-let clients = [];
 
 server.on('error', function (error) {
     console.log('Error: ' + error);
@@ -12,10 +9,6 @@ server.on('error', function (error) {
 server.on('message', function (msg, info) {
     console.log('Dados recebidos do cliente: ' + msg.toString());
     console.log('Received %d bytes from %s:%d\n', msg.length, info.address, info.port);
-
-    if (!clients.includes(info.port)){
-        clients.push(info.port);
-    }
 
     server.send(msg, info.port, 'localhost', function (error) {
         if (error) {

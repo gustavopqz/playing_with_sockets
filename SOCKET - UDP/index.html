@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDP Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+            justify-content: center;
+            background: linear-gradient(90deg, rgb(0, 0, 255), rgb(173, 216, 230)); 
+        }
+        #chat {
+            width: 30%;
+            height: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px; / Bordas arredondadas /
+        }
+        #message {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 10px; 
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Digite uma mensagem">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const ws = new WebSocket('ws://localhost:8080');
+        let usuarioAleatorio = prompt('Digite seu nome: ');
+
+        ws.onmessage = function(event) {
+            const newMessage = document.createElement('div');
+            newMessage.textContent = event.data;
+            chat.appendChild(newMessage);
+            chat.scrollTop = chat.scrollHeight; // Scroll automático
+        };
+
+        function sendMessage() {
+        // Cria um objeto Date com a data e hora atuais
+        var now = new Date();
+
+        // Extrai as horas e minutos
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+
+        // Formata as horas e minutos para sempre ter dois dígitos
+        var horarioFormatado = ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2);
+
+        const message = messageInput.value;
+        ws.send(`(${horarioFormatado}) ${usuarioAleatorio}: ` + message);
+        messageInput.value = '';
+        }
+    </script>
+</body>
+</html>
